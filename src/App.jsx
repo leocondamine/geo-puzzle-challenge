@@ -1,9 +1,10 @@
 import React from "react";
-import MapDisplay from "./component/MapDisplay";
+import MapDisplay from "./components/MapDisplay";
+import GameController from "./GameController";
 
 const App = () => (
   <>
-    <MapDisplay />
+    <GameController />
   </>
 );
 
