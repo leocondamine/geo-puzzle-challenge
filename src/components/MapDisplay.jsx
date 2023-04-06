@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import GeoJSON from "ol/format/GeoJSON";
 import Map from "ol/Map";
 import VectorLayer from "ol/layer/Vector";
@@ -8,16 +8,11 @@ import { DragBox, Select } from "ol/interaction";
 import { Fill, Stroke, Style } from "ol/style";
 import { platformModifierKeyOnly } from "ol/events/condition";
 
-const MapDisplay = ({onFeatureClicked}) => {
+const MapDisplay = ({ onFeatureClicked }) => {
   const handleMapClick = (name) => {
+    changeFeatureColor(name); // change color to red
     onFeatureClicked(name);
   };
-
-  // const handleClicked = (name) => {
-  //   console.log(name);
-  //   setSelectedFeatureNames(name);
-  //   console.log(selectedFeatureNames);
-  // };
 
   const vectorSource = new VectorSource({
     url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
@@ -63,7 +58,7 @@ const MapDisplay = ({onFeatureClicked}) => {
   // a normal select interaction to handle click
   const select = new Select({
     style: function (feature) {
-      const color = feature.get("COLOR_BIO") || "#FF0000";
+      const color = feature.get("COLOR_BIO") || "blue";
       selectedStyle.getFill().setColor(color);
       return selectedStyle;
     },
@@ -134,9 +129,44 @@ const MapDisplay = ({onFeatureClicked}) => {
       infoBox.innerHTML = "None";
     }
   });
+
+  const newStyle = new Style({
+    fill: new Fill({
+      color: "blue",
+    }),
+  });
+
+  const changeFeatureColor = (name) => {
+    vectorSource.forEachFeature((feature) => {
+      if (feature.get("NAME") === name) {
+        // create new style for the selected feature
+        const newStyle = new Style({
+          fill: new Fill({
+            color: "blue",
+          }),
+        });
+        // store the original style in a property
+        if (!feature.get("__oldStyle")) {
+          feature.set("__oldStyle", feature.getStyle());
+        }
+        // set the new style for the selected feature
+        feature.setStyle(newStyle);
+      } else {
+        // reset the style of other features
+        const oldStyle = feature.get("__oldStyle");
+        if (oldStyle) {
+          feature.setStyle(oldStyle);
+        }
+      }
+    });
+  };
+
   return (
     <div>
-      <div id="map" className="map absolute top-0 bottom-0 w-full"></div>
+      <div
+        id="map"
+        className="map absolute top-0 bottom-0 w-full overflow-hidden"
+      ></div>
       <div className="absolute top-0 bottom-0">
         Selected regions: <span id="info">None</span>
       </div>
