@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, useEffect, useMemo, useState } from "react";
 import GeoJSON from "ol/format/GeoJSON";
 import Map from "ol/Map";
 import VectorLayer from "ol/layer/Vector";
@@ -10,33 +10,47 @@ import { platformModifierKeyOnly } from "ol/events/condition";
 
 const MapDisplay = ({
   onFeatureClicked,
-  passchangeFeatureColor,
+  triggerChangeFeatureColor,
   changeFeatureColor,
+  blink,
 }) => {
-  const initVectorSource = new VectorSource({
-    url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
-    format: new GeoJSON(),
-  });
+  // const initVectorSource = new VectorSource({
+  //   url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
+  //   format: new GeoJSON(),
+  // });
 
-  const [vectorSource, setVectorSource] = useState(initVectorSource);
+  // const [vectorSource, setVectorSource] = useState(initVectorSource);
 
-  const gfeatures = vectorSource.getFeatures();
-  console.log(gfeatures);
+  const vectorSource = useMemo(() => {
+    return new VectorSource({
+      url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
+      format: new GeoJSON(),
+    });
+  }, []);
+
+  // const gfeatures = vectorSource.getFeatures();
+  // console.log(gfeatures);
 
   useEffect(() => {
     console.log("function is passed !!!!!!!!!");
-    console.log(changeFeatureColor);
     const feature = changeFeatureColor().feature;
     const color = changeFeatureColor().color;
     console.log(feature, color);
     if (vectorSource) {
-      vchangeFeatureColor(feature, color);
+      changeFeatureColorDisp(feature, color);
       console.log("function is passed 2 !!!!!!!!!");
     }
-  }, [passchangeFeatureColor]);
+  }, [triggerChangeFeatureColor]);
+
+  useEffect(() => {
+    const feature = blink.feature;
+    const color = blink.color;
+    console.log(feature, color);
+
+    blinkFeatureColorDisp(feature, color);
+  }, [blink]);
 
   const handleMapClick = (name) => {
-    // changeFeatureColor(name); // change color to red
     onFeatureClicked(name);
   };
 
@@ -52,7 +66,7 @@ const MapDisplay = ({
         source: vectorSource,
         background: "#1a2b39",
         style: function (feature) {
-          const color = feature.get("COLOR_BIO") || "#eeeeee";
+          const color = "#eeeeee";
           style.getFill().setColor(color);
           return style;
         },
@@ -66,18 +80,8 @@ const MapDisplay = ({
     }),
   });
 
-  // const selectedStyle = new Style({
-  //   fill: new Fill({
-  //     color: "rgba(255, 100, 255, 0.7)",
-  //   }),
-  //   stroke: new Stroke({
-  //     color: "rgba(255, 255, 255, 0.7)",
-  //     width: 2,
-  //   }),
-  // });
-
   // a normal select interaction to handle click
-  const select = new Select();
+  const select = new Select({ style: null });
   map.addInteraction(select);
 
   const selectedFeatures = select.getFeatures();
@@ -145,21 +149,13 @@ const MapDisplay = ({
     }
   });
 
-  // const newStyle = new Style({
-  //   fill: new Fill({
-  //     color: "blue",
-  //   }),
-  // });
-
-  const vchangeFeatureColor = (name, color) => {
+  const changeFeatureColorDisp = (name, color) => {
     console.log("change feature color executed");
     console.log(name);
     console.log(color);
 
-    const features = vectorSource.getFeatures();
-    // console.log(features);
+    // const features = vectorSource.getFeatures();
     vectorSource.forEachFeature((feature) => {
-      // console.log(feature);
       if (feature.get("NAME") === name) {
         const newStyle = new Style({
           fill: new Fill({
@@ -169,26 +165,33 @@ const MapDisplay = ({
         feature.setStyle(newStyle);
       }
     });
-    // if (feature.get("NAME") === "Chile") {
-    //   // create new style for the selected feature
-    //   const newStyle = new Style({
-    //     fill: new Fill({
-    //       color: "red",
-    //     }),
-    //   });
-    //   // store the original style in a property
-    //   if (!feature.get("__oldStyle")) {
-    //     feature.set("__oldStyle", feature.getStyle());
-    //   }
-    //   // set the new style for the selected feature
-    //   feature.setStyle(newStyle);
-    // } else {
-    //   // reset the style of other features
-    //   const oldStyle = feature.get("__oldStyle");
-    //   if (oldStyle) {
-    //     feature.setStyle(oldStyle);
-    //   }
-    // }
+  };
+
+  const blinkFeatureColorDisp = (name, color) => {
+    vectorSource.forEachFeature((feature) => {
+      if (feature.get("NAME") === name) {
+        const initStyle = new Style({
+          fill: new Fill({
+            color: color,
+          }),
+        });
+        feature.setStyle(initStyle);
+        const style = feature.getStyle();
+        style.setFill(new Fill({ color: color }));
+        const intervalId = setInterval(() => {
+          const fill = style.getFill();
+          if (fill.getColor() === color) {
+            style.setFill(new Fill({ color: "white" }));
+          } else {
+            style.setFill(new Fill({ color: color }));
+          }
+          feature.setStyle(style);
+        }, 500);
+        setTimeout(() => {
+          clearInterval(intervalId);
+        }, 5000);
+      }
+    });
   };
 
   return (

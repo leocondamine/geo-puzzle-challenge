@@ -9,9 +9,11 @@ const GameController = () => {
   const [nbrOfTries, setNbrOfTries] = useState(0);
   const [nbrFound, setNbrFound] = useState(0);
   const [guessFound, setGuessFound] = useState([]);
+  const [trigger, setTrigger] = useState([]);
+  const [blink, setBlink] = useState("");
 
   useEffect(() => {
-    const fetchFeatures = async () => {
+    const fetchData = async () => {
       fetch(
         "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson"
       )
@@ -25,7 +27,7 @@ const GameController = () => {
         .catch((error) => console.error(error));
     };
 
-    fetchFeatures();
+    fetchData();
   }, []);
 
   const handleMapData = (data) => {
@@ -52,7 +54,8 @@ const GameController = () => {
     if (nbrOfTries < 4) {
       checkGuess();
     } else {
-      setNewGuess();
+      checkGuess();
+      setBlink({ feature: guess, color: "blue" });
       console.log("tu es nul gros nullos");
     }
   }, [selectedFeature]);
@@ -60,28 +63,33 @@ const GameController = () => {
   const checkGuess = () => {
     if (selectedFeature === guess) {
       console.log("Guessed right !!! ");
+      setGuessFound(guess);
+      setBlink({ feature: selectedFeature, color: "green" });
       setNewGuess();
+    } else {
+      console.log("wrong choice");
+      setBlink({ feature: selectedFeature, color: "red" });
     }
   };
 
   const setNewGuess = () => {
-    setGuessFound(guess);
     const remainingFeaturesToGuess = featuresToGuess.slice(1);
     const newFeatureToGuess = remainingFeaturesToGuess[0];
     setFeaturesToGuess(remainingFeaturesToGuess);
     setNbrFound(nbrOfTries);
 
-    console.log(remainingFeaturesToGuess);
-    console.log("new Feature :");
-    console.log(newFeatureToGuess);
+    // console.log(remainingFeaturesToGuess);
+    // console.log("new Feature :");
+    // console.log(newFeatureToGuess);
 
-    changeFeatureColor();
     if (featuresToGuess.length > 0) {
       resetNbrOfTries();
       setGuess(newFeatureToGuess);
+      setTrigger([0]);
     } else {
       setGameIsFinished();
     }
+    changeFeatureColor();
   };
 
   const changeFeatureColor = () => {
@@ -109,7 +117,8 @@ const GameController = () => {
       <MapDisplay
         onFeatureClicked={handleMapData}
         changeFeatureColor={changeFeatureColor}
-        passchangeFeatureColor={guess}
+        triggerChangeFeatureColor={trigger}
+        blink={blink}
       />
       <FeatureToGuess guess={guess} />
     </>
