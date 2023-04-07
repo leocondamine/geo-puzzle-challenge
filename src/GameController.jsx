@@ -7,6 +7,8 @@ const GameController = () => {
   const [featuresToGuess, setFeaturesToGuess] = useState([]);
   const [guess, setGuess] = useState([]);
   const [nbrOfTries, setNbrOfTries] = useState(0);
+  const [nbrFound, setNbrFound] = useState(0);
+  const [guessFound, setGuessFound] = useState([]);
 
   useEffect(() => {
     const fetchFeatures = async () => {
@@ -36,11 +38,16 @@ const GameController = () => {
     console.log("Guess");
     console.log(guess);
     console.log("Nbr of tries");
-    if (selectedFeature.length === 0) {
-      return;
-    } else {
-      setNbrOfTries(nbrOfTries + 1);
+    try {
+      if (selectedFeature.length === 0) {
+        return;
+      } else {
+        setNbrOfTries(nbrOfTries + 1);
+      }
+    } catch {
+      console.log("il y a eu erreur");
     }
+
     console.log(nbrOfTries + 1);
     if (nbrOfTries < 4) {
       checkGuess();
@@ -58,18 +65,34 @@ const GameController = () => {
   };
 
   const setNewGuess = () => {
+    setGuessFound(guess);
     const remainingFeaturesToGuess = featuresToGuess.slice(1);
     const newFeatureToGuess = remainingFeaturesToGuess[0];
     setFeaturesToGuess(remainingFeaturesToGuess);
+    setNbrFound(nbrOfTries);
+
     console.log(remainingFeaturesToGuess);
     console.log("new Feature :");
     console.log(newFeatureToGuess);
+
+    changeFeatureColor();
     if (featuresToGuess.length > 0) {
-      setGuess(newFeatureToGuess);
       resetNbrOfTries();
+      setGuess(newFeatureToGuess);
     } else {
       setGameIsFinished();
     }
+  };
+
+  const changeFeatureColor = () => {
+    console.log(`nombre bfini ${nbrFound}`);
+    if (nbrFound === 1) {
+      return { feature: guessFound, color: "red" };
+    }
+    if (nbrFound === 2) {
+      return { feature: guessFound, color: "blue" };
+    }
+    return { feature: guessFound, color: "green" };
   };
 
   const resetNbrOfTries = () => {
@@ -83,7 +106,11 @@ const GameController = () => {
 
   return (
     <>
-      <MapDisplay onFeatureClicked={handleMapData} />
+      <MapDisplay
+        onFeatureClicked={handleMapData}
+        changeFeatureColor={changeFeatureColor}
+        passchangeFeatureColor={guess}
+      />
       <FeatureToGuess guess={guess} />
     </>
   );

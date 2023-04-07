@@ -8,16 +8,37 @@ import { DragBox, Select } from "ol/interaction";
 import { Fill, Stroke, Style } from "ol/style";
 import { platformModifierKeyOnly } from "ol/events/condition";
 
-const MapDisplay = ({ onFeatureClicked }) => {
-  const handleMapClick = (name) => {
-    changeFeatureColor(name); // change color to red
-    onFeatureClicked(name);
-  };
-
-  const vectorSource = new VectorSource({
+const MapDisplay = ({
+  onFeatureClicked,
+  passchangeFeatureColor,
+  changeFeatureColor,
+}) => {
+  const initVectorSource = new VectorSource({
     url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
     format: new GeoJSON(),
   });
+
+  const [vectorSource, setVectorSource] = useState(initVectorSource);
+
+  const gfeatures = vectorSource.getFeatures();
+  console.log(gfeatures);
+
+  useEffect(() => {
+    console.log("function is passed !!!!!!!!!");
+    console.log(changeFeatureColor);
+    const feature = changeFeatureColor().feature;
+    const color = changeFeatureColor().color;
+    console.log(feature, color);
+    if (vectorSource) {
+      vchangeFeatureColor(feature, color);
+      console.log("function is passed 2 !!!!!!!!!");
+    }
+  }, [passchangeFeatureColor]);
+
+  const handleMapClick = (name) => {
+    // changeFeatureColor(name); // change color to red
+    onFeatureClicked(name);
+  };
 
   const style = new Style({
     fill: new Fill({
@@ -45,24 +66,18 @@ const MapDisplay = ({ onFeatureClicked }) => {
     }),
   });
 
-  const selectedStyle = new Style({
-    fill: new Fill({
-      color: "rgba(255, 100, 255, 0.7)",
-    }),
-    stroke: new Stroke({
-      color: "rgba(255, 255, 255, 0.7)",
-      width: 2,
-    }),
-  });
+  // const selectedStyle = new Style({
+  //   fill: new Fill({
+  //     color: "rgba(255, 100, 255, 0.7)",
+  //   }),
+  //   stroke: new Stroke({
+  //     color: "rgba(255, 255, 255, 0.7)",
+  //     width: 2,
+  //   }),
+  // });
 
   // a normal select interaction to handle click
-  const select = new Select({
-    style: function (feature) {
-      const color = feature.get("COLOR_BIO") || "blue";
-      selectedStyle.getFill().setColor(color);
-      return selectedStyle;
-    },
-  });
+  const select = new Select();
   map.addInteraction(select);
 
   const selectedFeatures = select.getFeatures();
@@ -130,35 +145,50 @@ const MapDisplay = ({ onFeatureClicked }) => {
     }
   });
 
-  const newStyle = new Style({
-    fill: new Fill({
-      color: "blue",
-    }),
-  });
+  // const newStyle = new Style({
+  //   fill: new Fill({
+  //     color: "blue",
+  //   }),
+  // });
 
-  const changeFeatureColor = (name) => {
+  const vchangeFeatureColor = (name, color) => {
+    console.log("change feature color executed");
+    console.log(name);
+    console.log(color);
+
+    const features = vectorSource.getFeatures();
+    // console.log(features);
     vectorSource.forEachFeature((feature) => {
+      // console.log(feature);
       if (feature.get("NAME") === name) {
-        // create new style for the selected feature
         const newStyle = new Style({
           fill: new Fill({
-            color: "blue",
+            color: color,
           }),
         });
-        // store the original style in a property
-        if (!feature.get("__oldStyle")) {
-          feature.set("__oldStyle", feature.getStyle());
-        }
-        // set the new style for the selected feature
         feature.setStyle(newStyle);
-      } else {
-        // reset the style of other features
-        const oldStyle = feature.get("__oldStyle");
-        if (oldStyle) {
-          feature.setStyle(oldStyle);
-        }
       }
     });
+    // if (feature.get("NAME") === "Chile") {
+    //   // create new style for the selected feature
+    //   const newStyle = new Style({
+    //     fill: new Fill({
+    //       color: "red",
+    //     }),
+    //   });
+    //   // store the original style in a property
+    //   if (!feature.get("__oldStyle")) {
+    //     feature.set("__oldStyle", feature.getStyle());
+    //   }
+    //   // set the new style for the selected feature
+    //   feature.setStyle(newStyle);
+    // } else {
+    //   // reset the style of other features
+    //   const oldStyle = feature.get("__oldStyle");
+    //   if (oldStyle) {
+    //     feature.setStyle(oldStyle);
+    //   }
+    // }
   };
 
   return (
