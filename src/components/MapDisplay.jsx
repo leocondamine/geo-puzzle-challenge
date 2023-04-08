@@ -22,6 +22,7 @@ const MapDisplay = ({
   }, []);
 
   const blinkDuration = 1500;
+  const landColorHexa = "#006400";
 
   useEffect(() => {
     console.log("function is passed !!!!!!!!!");
@@ -33,7 +34,7 @@ const MapDisplay = ({
       setTimeout(() => {
         changeFeatureColorDisp(feature, color);
         console.log("function is passed 2 !!!!!!!!!");
-      }, blinkDuration + 500); // wait for 5 seconds
+      }, blinkDuration + 500);
     }
   }, [triggerChangeFeatureColor]);
 
@@ -43,13 +44,15 @@ const MapDisplay = ({
     console.log(feature, color);
 
     blinkFeatureColorDisp(feature, color);
+    setTimeout(() => {
+      changeFeatureColorDisp(feature, landColorHexa);
+      console.log("function is passed 2 !!!!!!!!!");
+    }, blinkDuration + 500);
   }, [blink]);
 
   const handleMapClick = (name) => {
     onFeatureClicked(name);
   };
-
-  const landColorHexa = "#006400";
 
   const landStyle = new Style({
     fill: new Fill({
