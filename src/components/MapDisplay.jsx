@@ -23,31 +23,36 @@ const MapDisplay = ({
 
   const blinkDuration = 1500;
   const landColorHexa = "#006400";
+  const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
-    console.log("function is passed !!!!!!!!!");
+    clearInterval(intervalId);
+    console.log(
+      "=============== right after infinite i id ====================="
+    );
+    console.log(intervalId);
+    console.log("====================================");
     const feature = changeFeatureColor().feature;
     const color = changeFeatureColor().color;
-    console.log(feature, color);
+    const isInfinite = false;
     if (vectorSource) {
-      blinkFeatureColorDisp(feature, "white");
+      blinkFeatureColorDisp(feature, "white", isInfinite);
       setTimeout(() => {
         changeFeatureColorDisp(feature, color);
-        console.log("function is passed 2 !!!!!!!!!");
-      }, blinkDuration + 500);
+      }, blinkDuration + 300);
     }
   }, [triggerChangeFeatureColor]);
 
   useEffect(() => {
     const feature = blink.feature;
     const color = blink.color;
-    console.log(feature, color);
-
-    blinkFeatureColorDisp(feature, color);
+    const isInfinite = blink.isInfinite;
+    console.log(isInfinite);
+    blinkFeatureColorDisp(feature, color, isInfinite);
     setTimeout(() => {
       changeFeatureColorDisp(feature, landColorHexa);
-      console.log("function is passed 2 !!!!!!!!!");
-    }, blinkDuration + 500);
+      // console.log("function is passed 2 !!!!!!!!!");
+    }, blinkDuration + 400);
   }, [blink]);
 
   const handleMapClick = (name) => {
@@ -60,6 +65,7 @@ const MapDisplay = ({
     }),
   });
 
+  // a normal select interaction to handle click
   const map = new Map({
     layers: [
       new VectorLayer({
@@ -80,7 +86,6 @@ const MapDisplay = ({
     }),
   });
 
-  // a normal select interaction to handle click
   const select = new Select({ style: null });
   map.addInteraction(select);
 
@@ -150,7 +155,6 @@ const MapDisplay = ({
   });
 
   const changeFeatureColorDisp = (name, color) => {
-    console.log("change feature color executed");
     vectorSource.forEachFeature((feature) => {
       if (feature.get("NAME") === name) {
         const newStyle = new Style({
@@ -163,7 +167,7 @@ const MapDisplay = ({
     });
   };
 
-  const blinkFeatureColorDisp = (name, color) => {
+  const blinkFeatureColorDisp = (name, color, isFinite) => {
     vectorSource.forEachFeature((feature) => {
       if (feature.get("NAME") === name) {
         const initStyle = new Style({
@@ -174,7 +178,7 @@ const MapDisplay = ({
         feature.setStyle(initStyle);
         const style = feature.getStyle();
         style.setFill(new Fill({ color: color }));
-        const intervalId = setInterval(() => {
+        const intervalIdLocalScope = setInterval(() => {
           const fill = style.getFill();
           if (fill.getColor() === color) {
             style.setFill(new Fill({ color: landColorHexa }));
@@ -182,10 +186,19 @@ const MapDisplay = ({
             style.setFill(new Fill({ color: color }));
           }
           feature.setStyle(style);
-        }, 200);
-        setTimeout(() => {
-          clearInterval(intervalId);
-        }, blinkDuration);
+        }, 400);
+        console.log("====================================");
+        console.log(intervalIdLocalScope);
+        console.log("====================================");
+        if (isFinite === false) {
+          setTimeout(() => {
+            console.log("stop blinking");
+            console.log(intervalIdLocalScope);
+            clearInterval(intervalIdLocalScope);
+          }, blinkDuration);
+        } else {
+          setIntervalId(intervalIdLocalScope);
+        }
       }
     });
   };

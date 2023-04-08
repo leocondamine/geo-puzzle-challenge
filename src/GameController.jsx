@@ -35,27 +35,18 @@ const GameController = () => {
   };
 
   useEffect(() => {
-    console.log("Selected feature");
-    console.log(selectedFeature);
-    console.log("Guess");
-    console.log(guess);
-    console.log("Nbr of tries");
     try {
       if (selectedFeature.length === 0) {
         return;
-      } else {
-        setNbrOfTries(nbrOfTries + 1);
+      } else if (!featuresToGuess.includes(selectedFeature)) {
+        return;
       }
     } catch {
       console.log("il y a eu erreur");
     }
-
-    console.log(nbrOfTries + 1);
-    if (nbrOfTries < 4) {
-      checkGuess();
-    } else {
-      checkGuess();
-      setBlink({ feature: guess, color: "blue" });
+    checkGuess();
+    if (nbrOfTries === 3) {
+      setBlink({ feature: guess, color: "red", isInfinite: true });
       console.log("tu es nul gros nullos");
     }
   }, [selectedFeature]);
@@ -64,48 +55,50 @@ const GameController = () => {
     if (selectedFeature === guess) {
       console.log("Guessed right !!! ");
       setGuessFound(guess);
-      // setBlink({ feature: selectedFeature, color: "green" });
       setNewGuess();
     } else {
       console.log("wrong choice");
-      setBlink({ feature: selectedFeature, color: "red" });
+      setBlink({ feature: selectedFeature, color: "red", isInfinite: false });
+      setNbrOfTries(nbrOfTries + 1);
     }
   };
 
   const setNewGuess = () => {
+    console.log("=================nbrOfTries===================");
+    console.log(nbrOfTries);
+    console.log("====================================");
+    setNbrFound(nbrOfTries);
     const remainingFeaturesToGuess = featuresToGuess.slice(1);
     const newFeatureToGuess = remainingFeaturesToGuess[0];
     setFeaturesToGuess(remainingFeaturesToGuess);
-    setNbrFound(nbrOfTries);
-
-    // console.log(remainingFeaturesToGuess);
-    // console.log("new Feature :");
-    // console.log(newFeatureToGuess);
 
     if (featuresToGuess.length > 0) {
-      resetNbrOfTries();
       setGuess(newFeatureToGuess);
       setTrigger([0]);
     } else {
       setGameIsFinished();
     }
+    resetNbrOfTries();
     changeFeatureColor();
-  };
-
-  const changeFeatureColor = () => {
-    console.log(`nombre bfini ${nbrFound}`);
-    if (nbrFound === 1) {
-      return { feature: guessFound, color: "red" };
-    }
-    if (nbrFound === 2) {
-      return { feature: guessFound, color: "blue" };
-    }
-    return { feature: guessFound, color: "green" };
   };
 
   const resetNbrOfTries = () => {
     console.log("reset the number of tries");
     setNbrOfTries(0);
+  };
+
+  const changeFeatureColor = () => {
+    console.log(`nombre bfini ${nbrFound}`);
+    if (nbrFound === 0) {
+      return { feature: guessFound, color: "white" };
+    }
+    if (nbrFound === 1) {
+      return { feature: guessFound, color: "#FFBD8D" };
+    }
+    if (nbrFound === 2) {
+      return { feature: guessFound, color: "#FF710A" };
+    }
+    return { feature: guessFound, color: "red" };
   };
 
   const setGameIsFinished = () => {
