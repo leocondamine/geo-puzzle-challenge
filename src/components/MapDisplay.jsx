@@ -14,13 +14,6 @@ const MapDisplay = ({
   changeFeatureColor,
   blink,
 }) => {
-  // const initVectorSource = new VectorSource({
-  //   url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
-  //   format: new GeoJSON(),
-  // });
-
-  // const [vectorSource, setVectorSource] = useState(initVectorSource);
-
   const vectorSource = useMemo(() => {
     return new VectorSource({
       url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
@@ -28,8 +21,7 @@ const MapDisplay = ({
     });
   }, []);
 
-  // const gfeatures = vectorSource.getFeatures();
-  // console.log(gfeatures);
+  const blinkDuration = 1500;
 
   useEffect(() => {
     console.log("function is passed !!!!!!!!!");
@@ -37,8 +29,11 @@ const MapDisplay = ({
     const color = changeFeatureColor().color;
     console.log(feature, color);
     if (vectorSource) {
-      changeFeatureColorDisp(feature, color);
-      console.log("function is passed 2 !!!!!!!!!");
+      blinkFeatureColorDisp(feature, "white");
+      setTimeout(() => {
+        changeFeatureColorDisp(feature, color);
+        console.log("function is passed 2 !!!!!!!!!");
+      }, blinkDuration + 500); // wait for 5 seconds
     }
   }, [triggerChangeFeatureColor]);
 
@@ -54,9 +49,11 @@ const MapDisplay = ({
     onFeatureClicked(name);
   };
 
-  const style = new Style({
+  const landColorHexa = "#006400";
+
+  const landStyle = new Style({
     fill: new Fill({
-      color: "#eeeeee",
+      color: landColorHexa,
     }),
   });
 
@@ -66,9 +63,9 @@ const MapDisplay = ({
         source: vectorSource,
         background: "#1a2b39",
         style: function (feature) {
-          const color = "#eeeeee";
-          style.getFill().setColor(color);
-          return style;
+          // const color = "#eeeeee";
+          // landStyle.getFill().setColor(color);
+          return landStyle;
         },
       }),
     ],
@@ -151,10 +148,6 @@ const MapDisplay = ({
 
   const changeFeatureColorDisp = (name, color) => {
     console.log("change feature color executed");
-    console.log(name);
-    console.log(color);
-
-    // const features = vectorSource.getFeatures();
     vectorSource.forEachFeature((feature) => {
       if (feature.get("NAME") === name) {
         const newStyle = new Style({
@@ -181,15 +174,15 @@ const MapDisplay = ({
         const intervalId = setInterval(() => {
           const fill = style.getFill();
           if (fill.getColor() === color) {
-            style.setFill(new Fill({ color: "white" }));
+            style.setFill(new Fill({ color: landColorHexa }));
           } else {
             style.setFill(new Fill({ color: color }));
           }
           feature.setStyle(style);
-        }, 500);
+        }, 200);
         setTimeout(() => {
           clearInterval(intervalId);
-        }, 5000);
+        }, blinkDuration);
       }
     });
   };

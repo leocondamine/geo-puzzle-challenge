@@ -64,7 +64,7 @@ const GameController = () => {
     if (selectedFeature === guess) {
       console.log("Guessed right !!! ");
       setGuessFound(guess);
-      setBlink({ feature: selectedFeature, color: "green" });
+      // setBlink({ feature: selectedFeature, color: "green" });
       setNewGuess();
     } else {
       console.log("wrong choice");
