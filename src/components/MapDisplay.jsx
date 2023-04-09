@@ -8,12 +8,7 @@ import { DragBox, Select } from "ol/interaction";
 import { Fill, Stroke, Style } from "ol/style";
 import { platformModifierKeyOnly } from "ol/events/condition";
 
-const MapDisplay = ({
-  onFeatureClicked,
-  triggerChangeFeatureColor,
-  changeFeatureColor,
-  blink,
-}) => {
+const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   const vectorSource = useMemo(() => {
     return new VectorSource({
       url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
@@ -27,21 +22,24 @@ const MapDisplay = ({
 
   useEffect(() => {
     clearInterval(intervalId);
-    console.log(
-      "=============== right after infinite i id ====================="
-    );
-    console.log(intervalId);
-    console.log("====================================");
-    const feature = changeFeatureColor().feature;
-    const color = changeFeatureColor().color;
+    // console.log(
+    //   "=============== right after infinite i id ====================="
+    // );
+    // console.log(intervalId);
+    console.log("===============passed==============");
+    // if (changeFeatureColor) {
+    const feature = changeFeatureColor.feature;
+    const color = changeFeatureColor.color;
     const isInfinite = false;
+    console.log(feature, color);
     if (vectorSource) {
       blinkFeatureColorDisp(feature, "white", isInfinite);
       setTimeout(() => {
         changeFeatureColorDisp(feature, color);
       }, blinkDuration + 300);
     }
-  }, [triggerChangeFeatureColor]);
+    // }
+  }, [changeFeatureColor]);
 
   useEffect(() => {
     const feature = blink.feature;

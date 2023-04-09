@@ -7,10 +7,11 @@ const GameController = () => {
   const [featuresToGuess, setFeaturesToGuess] = useState([]);
   const [guess, setGuess] = useState([]);
   const [nbrOfTries, setNbrOfTries] = useState(0);
-  const [nbrFound, setNbrFound] = useState(0);
-  const [guessFound, setGuessFound] = useState([]);
+  // const [nbrFound, setNbrFound] = useState(0);
+  // const [guessFound, setGuessFound] = useState([]);
   const [trigger, setTrigger] = useState([]);
   const [blink, setBlink] = useState("");
+  const [changeFeatureColor, setChangeFeatureColor] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,21 +41,24 @@ const GameController = () => {
         return;
       } else if (!featuresToGuess.includes(selectedFeature)) {
         return;
+      } else {
+        checkGuess();
+        if (nbrOfTries === 3) {
+          setBlink({ feature: guess, color: "red", isInfinite: true });
+          console.log("tu es nul gros nullos");
+        }
       }
-    } catch {
-      console.log("il y a eu erreur");
-    }
-    checkGuess();
-    if (nbrOfTries === 3) {
-      setBlink({ feature: guess, color: "red", isInfinite: true });
-      console.log("tu es nul gros nullos");
+    } catch (e) {
+      console.log(e);
     }
   }, [selectedFeature]);
 
   const checkGuess = () => {
     if (selectedFeature === guess) {
       console.log("Guessed right !!! ");
-      setGuessFound(guess);
+      const guessFound = guess;
+      const nbrFound = nbrOfTries;
+      changeStateFeatureColor(nbrFound, guessFound);
       setNewGuess();
     } else {
       console.log("wrong choice");
@@ -67,19 +71,17 @@ const GameController = () => {
     console.log("=================nbrOfTries===================");
     console.log(nbrOfTries);
     console.log("====================================");
-    setNbrFound(nbrOfTries);
     const remainingFeaturesToGuess = featuresToGuess.slice(1);
     const newFeatureToGuess = remainingFeaturesToGuess[0];
     setFeaturesToGuess(remainingFeaturesToGuess);
 
     if (featuresToGuess.length > 0) {
       setGuess(newFeatureToGuess);
-      setTrigger([0]);
+      // setTrigger([0]);
     } else {
       setGameIsFinished();
     }
     resetNbrOfTries();
-    changeFeatureColor();
   };
 
   const resetNbrOfTries = () => {
@@ -87,18 +89,18 @@ const GameController = () => {
     setNbrOfTries(0);
   };
 
-  const changeFeatureColor = () => {
-    console.log(`nombre bfini ${nbrFound}`);
+  const changeStateFeatureColor = (nbrFound, guessFound) => {
+    // console.log(`nombre found = ${nbrFound}`);
+    console.log(nbrFound, guessFound);
     if (nbrFound === 0) {
-      return { feature: guessFound, color: "white" };
+      setChangeFeatureColor({ feature: guessFound, color: "white" });
+    } else if (nbrFound === 1) {
+      setChangeFeatureColor({ feature: guessFound, color: "#FFBD8D" });
+    } else if (nbrFound === 2) {
+      setChangeFeatureColor({ feature: guessFound, color: "#FF710A" });
+    } else {
+      setChangeFeatureColor({ feature: guessFound, color: "red" });
     }
-    if (nbrFound === 1) {
-      return { feature: guessFound, color: "#FFBD8D" };
-    }
-    if (nbrFound === 2) {
-      return { feature: guessFound, color: "#FF710A" };
-    }
-    return { feature: guessFound, color: "red" };
   };
 
   const setGameIsFinished = () => {
