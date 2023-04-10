@@ -12,8 +12,9 @@ import countries_simplified from "../maps/countries_simplified.json";
 const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   const vectorSource = useMemo(() => {
     return new VectorSource({
-      url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
-      features: new GeoJSON().readFeatures(countries_simplified),
+      url: "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/bfa131df3fc89b71d0cd84588ce27fd8fb52f979/src/maps/countries_simplified.json",
+      // url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
+      // features: new GeoJSON().readFeatures(countries_simplified),
       format: new GeoJSON(),
     });
   }, []);
@@ -29,18 +30,18 @@ const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
     // );
     // console.log(intervalId);
     console.log("===============passed==============");
-    // if (changeFeatureColor) {
-    const feature = changeFeatureColor.feature;
-    const color = changeFeatureColor.color;
-    const isInfinite = false;
-    console.log(feature, color);
-    if (vectorSource) {
-      blinkFeatureColorDisp(feature, "white", isInfinite);
-      setTimeout(() => {
-        changeFeatureColorDisp(feature, color);
-      }, blinkDuration + 300);
+    if (changeFeatureColor) {
+      const feature = changeFeatureColor.feature;
+      const color = changeFeatureColor.color;
+      const isInfinite = false;
+      console.log(feature, color);
+      if (vectorSource) {
+        blinkFeatureColorDisp(feature, "white", isInfinite);
+        setTimeout(() => {
+          changeFeatureColorDisp(feature, color);
+        }, blinkDuration + 300);
+      }
     }
-    // }
   }, [changeFeatureColor]);
 
   useEffect(() => {
@@ -63,6 +64,10 @@ const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
     fill: new Fill({
       color: landColorHexa,
     }),
+    // stroke: new Stroke({
+    //   color: "brown",
+    //   width: 1,
+    // }),
   });
 
   // a normal select interaction to handle click
@@ -170,6 +175,8 @@ const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   const blinkFeatureColorDisp = (name, color, isFinite) => {
     vectorSource.forEachFeature((feature) => {
       if (feature.get("NAME") === name) {
+        console.log("bourbier");
+        console.log(feature);
         const initStyle = new Style({
           fill: new Fill({
             color: color,
@@ -187,13 +194,13 @@ const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
           }
           feature.setStyle(style);
         }, 400);
-        console.log("====================================");
-        console.log(intervalIdLocalScope);
-        console.log("====================================");
+        // console.log("====================================");
+        // console.log(intervalIdLocalScope);
+
         if (isFinite === false) {
           setTimeout(() => {
-            console.log("stop blinking");
-            console.log(intervalIdLocalScope);
+            // console.log("stop blinking");
+            // console.log(intervalIdLocalScope);
             clearInterval(intervalIdLocalScope);
           }, blinkDuration);
         } else {
