@@ -7,11 +7,13 @@ import View from "ol/View";
 import { DragBox, Select } from "ol/interaction";
 import { Fill, Stroke, Style } from "ol/style";
 import { platformModifierKeyOnly } from "ol/events/condition";
+import countries_simplified from "../maps/countries_simplified.json";
 
 const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   const vectorSource = useMemo(() => {
     return new VectorSource({
       url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
+      features: new GeoJSON().readFeatures(countries_simplified),
       format: new GeoJSON(),
     });
   }, []);
