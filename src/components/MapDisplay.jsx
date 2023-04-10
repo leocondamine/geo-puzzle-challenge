@@ -11,8 +11,9 @@ import countries_simplified from "../maps/countries_simplified.json";
 
 const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   const vectorSource = useMemo(() => {
+    // filter-fields NAME on mapshaper applied
     return new VectorSource({
-      url: "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/bfa131df3fc89b71d0cd84588ce27fd8fb52f979/src/maps/countries_simplified.json",
+      url: "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/main/src/maps/countries_simplified_all.json",
       // url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
       // features: new GeoJSON().readFeatures(countries_simplified),
       format: new GeoJSON(),

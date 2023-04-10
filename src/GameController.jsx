@@ -16,7 +16,7 @@ const GameController = () => {
   useEffect(() => {
     const fetchData = async () => {
       fetch(
-        "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson"
+        "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/main/src/maps/countries_simplified_all.json"
       )
         .then((response) => response.json())
         .then((data) => {
