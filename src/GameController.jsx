@@ -3,7 +3,7 @@ import MapDisplay from "./components/MapDisplay";
 import FeatureToGuess from "./components/FeatureToGuess";
 import Score from "./components/Score";
 
-const GameController = () => {
+const GameController = ({ gameURL }) => {
   const [selectedFeature, setSelectedFeature] = useState([]);
   const [featuresToGuess, setFeaturesToGuess] = useState([]);
   const [guess, setGuess] = useState([]);
@@ -14,9 +14,8 @@ const GameController = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      fetch(
-        "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/main/src/maps/countries_simplified_all.json"
-      )
+      if (!gameURL) return;
+      fetch(gameURL)
         .then((response) => response.json())
         .then((data) => {
           const names = data.features.map((feature) => feature.properties.NAME);
@@ -28,7 +27,7 @@ const GameController = () => {
     };
 
     fetchData();
-  }, []);
+  }, [gameURL]);
 
   const handleMapData = (data) => {
     setSelectedFeature(data);
@@ -114,6 +113,7 @@ const GameController = () => {
         onFeatureClicked={handleMapData}
         changeFeatureColor={changeFeatureColor}
         blinkFeature={blinkFeature}
+        gameURL={gameURL}
       />
       <FeatureToGuess guess={guess} />
       <Score score={score} />
