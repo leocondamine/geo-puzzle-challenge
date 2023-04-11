@@ -13,7 +13,7 @@ const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   const vectorSource = useMemo(() => {
     // filter-fields NAME on mapshaper applied
     return new VectorSource({
-      url: "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/main/src/maps/countries_simplified_all.json",
+      url: "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/main/src/maps/countries_simplified_258.json",
       // url: "https://cdn.rawgit.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
       // features: new GeoJSON().readFeatures(countries_simplified),
       format: new GeoJSON(),
