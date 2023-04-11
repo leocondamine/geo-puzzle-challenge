@@ -9,7 +9,7 @@ import { Fill, Stroke, Style } from "ol/style";
 import { platformModifierKeyOnly } from "ol/events/condition";
 import countries_simplified from "../maps/countries_simplified.json";
 
-const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
+const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blinkFeature }) => {
   const vectorSource = useMemo(() => {
     // filter-fields NAME on mapshaper applied
     return new VectorSource({
@@ -23,6 +23,15 @@ const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   const blinkDuration = 1500;
   const landColorHexa = "#006400";
   const [intervalId, setIntervalId] = useState(null);
+
+  const createFeatureStyle = (color) => {
+    return new Style({
+      fill: new Fill({
+        color: color,
+      }),
+    });
+  };
+  const landStyle = createFeatureStyle(landColorHexa);
 
   useEffect(() => {
     clearInterval(intervalId);
@@ -46,30 +55,20 @@ const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   }, [changeFeatureColor]);
 
   useEffect(() => {
-    const feature = blink.feature;
-    const color = blink.color;
-    const isInfinite = blink.isInfinite;
+    const feature = blinkFeature.feature;
+    const color = blinkFeature.color;
+    const isInfinite = blinkFeature.isInfinite;
     console.log(isInfinite);
     blinkFeatureColorDisp(feature, color, isInfinite);
     setTimeout(() => {
       changeFeatureColorDisp(feature, landColorHexa);
       // console.log("function is passed 2 !!!!!!!!!");
     }, blinkDuration + 400);
-  }, [blink]);
+  }, [blinkFeature]);
 
   const handleMapClick = (name) => {
     onFeatureClicked(name);
   };
-
-  const landStyle = new Style({
-    fill: new Fill({
-      color: landColorHexa,
-    }),
-    // stroke: new Stroke({
-    //   color: "brown",
-    //   width: 1,
-    // }),
-  });
 
   // a normal select interaction to handle click
   const map = new Map({
@@ -163,12 +162,7 @@ const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   const changeFeatureColorDisp = (name, color) => {
     vectorSource.forEachFeature((feature) => {
       if (feature.get("NAME") === name) {
-        const newStyle = new Style({
-          fill: new Fill({
-            color: color,
-          }),
-        });
-        feature.setStyle(newStyle);
+        feature.setStyle(createFeatureStyle(color));
       }
     });
   };
@@ -176,32 +170,18 @@ const MapDisplay = ({ onFeatureClicked, changeFeatureColor, blink }) => {
   const blinkFeatureColorDisp = (name, color, isFinite) => {
     vectorSource.forEachFeature((feature) => {
       if (feature.get("NAME") === name) {
-        console.log("bourbier");
-        console.log(feature);
-        const initStyle = new Style({
-          fill: new Fill({
-            color: color,
-          }),
-        });
-        feature.setStyle(initStyle);
-        const style = feature.getStyle();
-        style.setFill(new Fill({ color: color }));
+        feature.setStyle(createFeatureStyle(color));
         const intervalIdLocalScope = setInterval(() => {
-          const fill = style.getFill();
-          if (fill.getColor() === color) {
-            style.setFill(new Fill({ color: landColorHexa }));
+          const currentFeatureStyle = feature.getStyle().getFill();
+          if (currentFeatureStyle.getColor() === color) {
+            feature.setStyle(landStyle);
           } else {
-            style.setFill(new Fill({ color: color }));
+            feature.setStyle(createFeatureStyle(color));
           }
-          feature.setStyle(style);
         }, 400);
-        // console.log("====================================");
-        // console.log(intervalIdLocalScope);
 
         if (isFinite === false) {
           setTimeout(() => {
-            // console.log("stop blinking");
-            // console.log(intervalIdLocalScope);
             clearInterval(intervalIdLocalScope);
           }, blinkDuration);
         } else {

@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import MapDisplay from "./components/MapDisplay";
 import FeatureToGuess from "./components/FeatureToGuess";
+import Score from "./components/Score";
 
 const GameController = () => {
   const [selectedFeature, setSelectedFeature] = useState([]);
   const [featuresToGuess, setFeaturesToGuess] = useState([]);
   const [guess, setGuess] = useState([]);
   const [nbrOfTries, setNbrOfTries] = useState(0);
-  // const [nbrFound, setNbrFound] = useState(0);
-  // const [guessFound, setGuessFound] = useState([]);
-  const [trigger, setTrigger] = useState([]);
-  const [blink, setBlink] = useState("");
+  const [blinkFeature, setBlinkFeature] = useState("");
   const [changeFeatureColor, setChangeFeatureColor] = useState("");
+  const [score, setScore] = useState({ rows: 0, totalTries: 0 });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +43,7 @@ const GameController = () => {
       } else {
         checkGuess();
         if (nbrOfTries === 3) {
-          setBlink({ feature: guess, color: "red", isInfinite: true });
+          setBlinkFeature({ feature: guess, color: "red", isInfinite: true });
           console.log("tu es nul gros nullos");
         }
       }
@@ -59,25 +58,27 @@ const GameController = () => {
       const guessFound = guess;
       const nbrFound = nbrOfTries;
       changeStateFeatureColor(nbrFound, guessFound);
+      setScore({ rows: score.rows + 1, totalTries: score.totalTries + 1 });
       setNewGuess();
     } else {
       console.log("wrong choice");
-      setBlink({ feature: selectedFeature, color: "red", isInfinite: false });
+      setBlinkFeature({
+        feature: selectedFeature,
+        color: "red",
+        isInfinite: false,
+      });
+      setScore({ rows: score.rows, totalTries: score.totalTries + 1 });
       setNbrOfTries(nbrOfTries + 1);
     }
   };
 
   const setNewGuess = () => {
-    console.log("=================nbrOfTries===================");
-    console.log(nbrOfTries);
-    console.log("====================================");
     const remainingFeaturesToGuess = featuresToGuess.slice(1);
     const newFeatureToGuess = remainingFeaturesToGuess[0];
     setFeaturesToGuess(remainingFeaturesToGuess);
 
     if (featuresToGuess.length > 0) {
       setGuess(newFeatureToGuess);
-      // setTrigger([0]);
     } else {
       setGameIsFinished();
     }
@@ -112,10 +113,10 @@ const GameController = () => {
       <MapDisplay
         onFeatureClicked={handleMapData}
         changeFeatureColor={changeFeatureColor}
-        triggerChangeFeatureColor={trigger}
-        blink={blink}
+        blinkFeature={blinkFeature}
       />
       <FeatureToGuess guess={guess} />
+      <Score score={score} />
     </>
   );
 };
