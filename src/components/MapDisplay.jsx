@@ -19,7 +19,7 @@ const MapDisplay = ({
   const vectorSource = useMemo(() => {
     if (gameURL) {
       return new VectorSource({
-        url: "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/main/src/maps/countries_very_simplified_258.json",
+        url: gameURL,
         format: new GeoJSON(),
       });
     } else {

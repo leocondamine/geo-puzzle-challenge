@@ -14,10 +14,10 @@ const GameSelector = ({ onGameSelected }) => {
   };
 
   return (
-    <div className="fixed flex justify-center items-center z-10 top-12 left-0 bg-black h-12 w-[30%] color-slate-500">
-      <label htmlFor="gameSelector">Choose a game: </label>
+    <div className="fixed flex justify-center items-center gap-4 z-10 top-12 left-0 bg-black h-12 w-[30%] color-slate-500">
+      <label htmlFor="gameSelector">Choose a game : </label>
       <select id="gameSelector" onChange={handleSelection}>
-        <option className="color-black" value="">
+        <option className="text-black" value="">
           Select a game
         </option>
         {gameList.map((game, index) => (
