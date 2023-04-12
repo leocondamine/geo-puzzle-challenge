@@ -56,7 +56,7 @@ const MapDisplay = ({
         blinkFeatureColorDisp(feature, "white", isInfinite);
         setTimeout(() => {
           changeFeatureColorDisp(feature, color);
-        }, blinkDuration + 300);
+        }, blinkDuration + 400);
       }
     }
   }, [changeFeatureColor]);
