@@ -8,26 +8,37 @@ const GameController = ({ gameURL }) => {
   const [selectedFeature, setSelectedFeature] = useState([]);
   const [featuresToGuess, setFeaturesToGuess] = useState([]);
   const [guess, setGuess] = useState([]);
-  const [nbrOfTries, setNbrOfTries] = useState(1);
+  const [countTries, setCountTries] = useState(1);
   const [blinkFeature, setBlinkFeature] = useState("");
   const [changeFeatureColor, setChangeFeatureColor] = useState("");
   const [score, setScore] = useState({ rows: 0, totalTries: 0 });
   const [startTimer, setStartTimer] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!gameURL) return;
-      fetch(gameURL)
-        .then((response) => response.json())
-        .then((data) => {
-          const names = data.features.map((feature) => feature.properties.NAME);
-          console.log(names[0]);
-          setFeaturesToGuess(names);
-          setGuess(names[0]);
-        })
-        .catch((error) => console.error(error));
-    };
+  const fetchData = async () => {
+    if (!gameURL) return;
+    try {
+      const data = await fetchJson(gameURL);
+      const names = data.features.map((feature) => feature.properties.NAME);
+      console.log(names);
+      setFeaturesToGuess(names);
+      setGuess(names[0]);
+    } catch (error) {
+      console.warn(error);
+    }
+  };
 
+  const fetchJson = async (url) => {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.warn(error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [gameURL]);
 
@@ -37,7 +48,7 @@ const GameController = ({ gameURL }) => {
 
   useEffect(() => {
     try {
-      if (selectedFeature.length === 0) {
+      if (!selectedFeature?.length) {
         return;
       } else if (!featuresToGuess.includes(selectedFeature)) {
         return;
@@ -60,7 +71,7 @@ const GameController = ({ gameURL }) => {
     if (selectedFeature === guess) {
       console.log("Guessed right !!! ");
       const guessFound = guess;
-      const nbrFound = nbrOfTries;
+      const nbrFound = countTries;
       changeStateFeatureColor(nbrFound, guessFound);
       setScore({ rows: score.rows + 1, totalTries: score.totalTries + 1 });
       setNewGuess();
@@ -71,14 +82,14 @@ const GameController = ({ gameURL }) => {
         color: "red",
         isInfinite: false,
       });
-      if (nbrOfTries === 3) {
+      if (countTries === 3) {
         console.log("tu es nul gros nullos");
         setTimeout(() => {
           setBlinkFeature({ feature: guess, color: "red", isInfinite: true });
         }, 1500);
       }
       setScore({ rows: score.rows, totalTries: score.totalTries + 1 });
-      setNbrOfTries(nbrOfTries + 1);
+      setCountTries(countTries + 1);
     }
   };
 
@@ -87,7 +98,7 @@ const GameController = ({ gameURL }) => {
     const newFeatureToGuess = remainingFeaturesToGuess[0];
     setFeaturesToGuess(remainingFeaturesToGuess);
 
-    resetNbrOfTries();
+    resetCountTries();
 
     if (featuresToGuess.length > 0) {
       setGuess(newFeatureToGuess);
@@ -97,9 +108,9 @@ const GameController = ({ gameURL }) => {
     }
   };
 
-  const resetNbrOfTries = () => {
+  const resetCountTries = () => {
     console.log("reset the number of tries");
-    setNbrOfTries(1);
+    setCountTries(1);
   };
 
   const stopTimerIfRunning = () => {
