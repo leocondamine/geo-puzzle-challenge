@@ -3,6 +3,7 @@ import MapDisplay from "./components/MapDisplay";
 import FeatureToGuess from "./components/FeatureToGuess";
 import Score from "./components/Score";
 import Timer from "./components/Timer";
+import { savePlayerData } from "./firebase";
 
 const GameController = ({ gameURL }) => {
   const [selectedFeature, setSelectedFeature] = useState([]);
@@ -13,6 +14,7 @@ const GameController = ({ gameURL }) => {
   const [changeFeatureColor, setChangeFeatureColor] = useState("");
   const [score, setScore] = useState({ rows: 0, totalTries: 0 });
   const [startTimer, setStartTimer] = useState(false);
+  const [playerTime, setPlayerTime] = useState(0);
 
   const fetchData = async () => {
     if (!gameURL) return;
@@ -100,7 +102,7 @@ const GameController = ({ gameURL }) => {
 
     resetCountTries();
 
-    if (featuresToGuess.length > 0) {
+    if (featuresToGuess.length > 255) {
       setGuess(newFeatureToGuess);
     } else {
       setGameIsFinished();
@@ -135,6 +137,11 @@ const GameController = ({ gameURL }) => {
 
   const setGameIsFinished = () => {
     console.log("the game is finished");
+    console.log(playerTime);
+    const playerName = prompt("Please enter your name:");
+    if (playerName) {
+      savePlayerData(playerName, score, playerTime);
+    }
   };
 
   return (
@@ -147,7 +154,7 @@ const GameController = ({ gameURL }) => {
       />
       <FeatureToGuess guess={guess} />
       <Score score={score} />
-      <Timer startTimer={startTimer} />
+      <Timer startTimer={startTimer} onTimeUpdate={setPlayerTime} />
     </>
   );
 };
