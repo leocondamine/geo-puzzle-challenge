@@ -101,8 +101,9 @@ const GameController = ({ gameURL }) => {
     setFeaturesToGuess(remainingFeaturesToGuess);
 
     resetCountTries();
-
-    if (featuresToGuess.length > 255) {
+    // to debug
+    // if (featuresToGuess.length > 255) {
+    if (featuresToGuess.length > 0) {
       setGuess(newFeatureToGuess);
     } else {
       setGameIsFinished();
