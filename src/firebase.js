@@ -8,13 +8,13 @@ import { getAnalytics } from "firebase/analytics";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyA1u15rIneFvRBunkYb67UaevZmWMIDoTM",
-  authDomain: "geo-puzzle-challenge.firebaseapp.com",
-  projectId: "geo-puzzle-challenge",
-  storageBucket: "geo-puzzle-challenge.appspot.com",
-  messagingSenderId: "989876841999",
-  appId: "1:989876841999:web:9390ca2c94b6f527473d7a",
-  measurementId: "G-WN81Y7TC4X",
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

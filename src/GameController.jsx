@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import _ from "lodash";
 import MapDisplay from "./components/MapDisplay";
 import FeatureToGuess from "./components/FeatureToGuess";
 import Score from "./components/Score";
@@ -22,8 +23,9 @@ const GameController = ({ gameURL }) => {
       const data = await fetchJson(gameURL);
       const names = data.features.map((feature) => feature.properties.NAME);
       console.log(names);
-      setFeaturesToGuess(names);
-      setGuess(names[0]);
+      const shuffledNames = _.shuffle(names);
+      setFeaturesToGuess(shuffledNames);
+      setGuess(shuffledNames[0]);
     } catch (error) {
       console.warn(error);
     }
