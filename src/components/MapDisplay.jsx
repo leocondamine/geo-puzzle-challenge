@@ -3,11 +3,16 @@ import GeoJSON from "ol/format/GeoJSON";
 import Map from "ol/Map";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
+import TileGrid from "ol/tilegrid/TileGrid.js";
+import VectorTileLayer from "ol/layer/VectorTile";
+import VectorTileSource from "ol/source/VectorTile";
 import View from "ol/View";
 import { DragBox, Select } from "ol/interaction";
 import { Fill, Stroke, Style } from "ol/style";
 import { platformModifierKeyOnly } from "ol/events/condition";
-import countries_simplified from "../maps/countries_simplified.json";
+import MVT from "ol/format/MVT";
+import { get as getProjection } from "ol/proj";
+// import countries_simplified from "../maps/countries_simplified.json";
 
 // filter-fields NAME on mapshaper applied
 const MapDisplay = ({
@@ -42,10 +47,6 @@ const MapDisplay = ({
 
   useEffect(() => {
     clearInterval(intervalId);
-    // console.log(
-    //   "=============== right after infinite i id ====================="
-    // );
-    // console.log(intervalId);
     console.log("===============passed==============");
     if (changeFeatureColor) {
       const feature = changeFeatureColor.feature;
@@ -89,9 +90,7 @@ const MapDisplay = ({
   // a normal select interaction to handle click
   const map = useMemo(() => {
     return new Map({
-      layers: [
-        vectorLayer, // Use the updated vectorLayer
-      ],
+      layers: [vectorLayer],
       target: null, // This will be set later in a useEffect
       view: new View({
         center: [0, 0],
