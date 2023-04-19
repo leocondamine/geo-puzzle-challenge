@@ -1,9 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 const GameSelector = ({ onGameSelected }) => {
-  const navigate = useNavigate();
-
   const gameList = [
     {
       name: "Countries",
@@ -14,7 +11,6 @@ const GameSelector = ({ onGameSelected }) => {
 
   const handleSelection = (event) => {
     onGameSelected(event.target.value);
-    navigate(`/game`);
   };
 
   return (
