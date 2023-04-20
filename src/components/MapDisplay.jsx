@@ -3,18 +3,11 @@ import GeoJSON from "ol/format/GeoJSON";
 import Map from "ol/Map";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import TileGrid from "ol/tilegrid/TileGrid.js";
-import VectorTileLayer from "ol/layer/VectorTile";
-import VectorTileSource from "ol/source/VectorTile";
 import View from "ol/View";
 import { DragBox, Select } from "ol/interaction";
 import { Fill, Stroke, Style } from "ol/style";
 import { platformModifierKeyOnly } from "ol/events/condition";
-import MVT from "ol/format/MVT";
-import { get as getProjection } from "ol/proj";
-// import countries_simplified from "../maps/countries_simplified.json";
 
-// filter-fields NAME on mapshaper applied
 const MapDisplay = ({
   onFeatureClicked,
   changeFeatureColor,

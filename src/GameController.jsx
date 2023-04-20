@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import _ from "lodash";
 import MapDisplay from "./components/MapDisplay";
 import FeatureToGuess from "./components/FeatureToGuess";
@@ -7,6 +9,8 @@ import Timer from "./components/Timer";
 import { savePlayerData } from "./firebase";
 
 const GameController = ({ gameURL }) => {
+  const navigate = useNavigate();
+
   const [selectedFeature, setSelectedFeature] = useState([]);
   const [featuresToGuess, setFeaturesToGuess] = useState([]);
   const [guess, setGuess] = useState([]);
@@ -105,12 +109,11 @@ const GameController = ({ gameURL }) => {
     resetCountTries();
 
     // to debug
-    // if (featuresToGuess.length > 255) {
-    if (featuresToGuess.length > 0) {
+    if (featuresToGuess.length > 255) {
+      // if (featuresToGuess.length > 0) {
       setGuess(newFeatureToGuess);
     } else {
       setGameIsFinished();
-      stopTimerIfRunning();
     }
   };
 
@@ -119,14 +122,7 @@ const GameController = ({ gameURL }) => {
     setCountTries(1);
   };
 
-  const stopTimerIfRunning = () => {
-    if (startTimer) {
-      setStartTimer(false);
-    }
-  };
-
   const changeStateFeatureColor = (nbrFound, guessFound) => {
-    // console.log(`nombre found = ${nbrFound}`);
     console.log(nbrFound, guessFound);
     if (nbrFound === 1) {
       setChangeFeatureColor({ feature: guessFound, color: "white" });
@@ -142,9 +138,17 @@ const GameController = ({ gameURL }) => {
   const setGameIsFinished = () => {
     console.log("the game is finished");
     console.log(playerTime);
+    stopTimer();
     const playerName = prompt("Please enter your name:");
     if (playerName) {
       savePlayerData(playerName, score, playerTime);
+    }
+    navigate(`/end`);
+  };
+
+  const stopTimer = () => {
+    if (startTimer) {
+      setStartTimer(false);
     }
   };
 
