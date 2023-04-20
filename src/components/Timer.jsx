@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from "react";
 
-const Timer = ({ startTimer, onTimeUpdate }) => {
+const Timer = ({ startTimer, onTimeStoped }) => {
   const [timer, setTimer] = useState(0);
+  const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
-    let interval;
     if (startTimer) {
-      interval = setInterval(() => {
+      const interval = setInterval(() => {
         setTimer((prevTimer) => prevTimer + 1);
       }, 1000);
+      setIntervalId(interval);
     } else {
-      clearInterval(interval);
+      clearInterval(intervalId);
+      handleEndTime(timer);
     }
-    handleTimeStop(timer);
-    return () => {
-      clearInterval(interval);
-    };
   }, [startTimer]);
 
-  const handleTimeStop = (time) => {
-    onTimeUpdate(time);
+  const handleEndTime = () => {
+    onTimeStoped(timer);
   };
 
   return (

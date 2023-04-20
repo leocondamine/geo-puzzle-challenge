@@ -15,19 +15,11 @@ const MapDisplay = ({
   gameURL,
 }) => {
   const vectorSource = useMemo(() => {
-    if (gameURL) {
-      return new VectorSource({
-        url: gameURL,
-        format: new GeoJSON(),
-      });
-    } else {
-      return new VectorSource();
-    }
+    return new VectorSource({
+      url: gameURL,
+      format: new GeoJSON(),
+    });
   }, [gameURL]);
-
-  const blinkDuration = 1500;
-  const landColorHexa = "#006400";
-  const [intervalId, setIntervalId] = useState(null);
 
   const createFeatureStyle = (color) => {
     return new Style({
@@ -36,51 +28,18 @@ const MapDisplay = ({
       }),
     });
   };
+  const landColorHexa = "#006400";
   const landStyle = createFeatureStyle(landColorHexa);
-
-  useEffect(() => {
-    clearInterval(intervalId);
-    console.log("===============passed==============");
-    if (changeFeatureColor) {
-      const feature = changeFeatureColor.feature;
-      const color = changeFeatureColor.color;
-      const isInfinite = false;
-      console.log(feature, color);
-      if (vectorSource) {
-        blinkFeatureColorDisp(feature, "white", isInfinite);
-        setTimeout(() => {
-          changeFeatureColorDisp(feature, color);
-        }, blinkDuration + 400);
-      }
-    }
-  }, [changeFeatureColor]);
-
-  useEffect(() => {
-    const feature = blinkFeature.feature;
-    const color = blinkFeature.color;
-    const isInfinite = blinkFeature.isInfinite;
-    console.log(isInfinite);
-    blinkFeatureColorDisp(feature, color, isInfinite);
-    setTimeout(() => {
-      changeFeatureColorDisp(feature, landColorHexa);
-      // console.log("function is passed 2 !!!!!!!!!");
-    }, blinkDuration + 400);
-  }, [blinkFeature]);
-
-  const handleMapClick = (name) => {
-    onFeatureClicked(name);
-  };
 
   const vectorLayer = useMemo(() => {
     return new VectorLayer({
-      source: new VectorSource(),
+      source: vectorSource,
       style: function (feature) {
         return landStyle;
       },
     });
-  }, []);
+  }, [vectorSource]);
 
-  // a normal select interaction to handle click
   const map = useMemo(() => {
     return new Map({
       layers: [vectorLayer],
@@ -92,10 +51,6 @@ const MapDisplay = ({
       }),
     });
   }, [vectorLayer]);
-
-  useEffect(() => {
-    vectorLayer.setSource(vectorSource);
-  }, [vectorSource]);
 
   useEffect(() => {
     map.setTarget("map");
@@ -116,21 +71,8 @@ const MapDisplay = ({
       const boxFeatures = vectorSource
         .getFeaturesInExtent(extent)
         .filter((feature) => feature.getGeometry().intersectsExtent(extent));
-
-      // features that intersect the box geometry are added to the
-      // collection of selected features
-
-      // if the view is not obliquely rotated the box geometry and
-      // its extent are equalivalent so intersecting features can
-      // be added directly to the collection
       const rotation = map.getView().getRotation();
       const oblique = rotation % (Math.PI / 2) !== 0;
-
-      // when the view is obliquely rotated the box extent will
-      // exceed its geometry so both the box and the candidate
-      // feature geometries are rotated around a common anchor
-      // to confirm that, with the box geometry aligned with its
-      // extent, the geometries intersect
       if (oblique) {
         const anchor = [0, 0];
         const geometry = dragBox.getGeometry().clone();
@@ -170,6 +112,42 @@ const MapDisplay = ({
       map.setTarget(null);
     };
   }, [map]);
+
+  const handleMapClick = (name) => {
+    onFeatureClicked(name);
+  };
+
+  const blinkDuration = 1500;
+  const [intervalId, setIntervalId] = useState(null);
+
+  useEffect(() => {
+    clearInterval(intervalId);
+    console.log("===============passed==============");
+    if (changeFeatureColor) {
+      const feature = changeFeatureColor.feature;
+      const color = changeFeatureColor.color;
+      const isInfinite = false;
+      console.log(feature, color);
+      if (vectorSource) {
+        blinkFeatureColorDisp(feature, "white", isInfinite);
+        setTimeout(() => {
+          changeFeatureColorDisp(feature, color);
+        }, blinkDuration + 400);
+      }
+    }
+  }, [changeFeatureColor]);
+
+  useEffect(() => {
+    const feature = blinkFeature.feature;
+    const color = blinkFeature.color;
+    const isInfinite = blinkFeature.isInfinite;
+    console.log(isInfinite);
+    blinkFeatureColorDisp(feature, color, isInfinite);
+    setTimeout(() => {
+      changeFeatureColorDisp(feature, landColorHexa);
+      // console.log("function is passed 2 !!!!!!!!!");
+    }, blinkDuration + 400);
+  }, [blinkFeature]);
 
   const changeFeatureColorDisp = (name, color) => {
     vectorSource.forEachFeature((feature) => {

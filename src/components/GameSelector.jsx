@@ -26,7 +26,7 @@ const GameSelector = ({ onGameSelected }) => {
   };
 
   return (
-    <div className="fixed flex justify-center items-center gap-4 z-10 top-12 left-0 bg-black h-12 w-[30%] color-slate-500">
+    <div className=" color-slate-500 z-10 flex h-screen w-full flex-col items-center justify-center gap-4 bg-black">
       <label htmlFor="game">Choose a game : </label>
       {gameList.map((game, index) => (
         <button

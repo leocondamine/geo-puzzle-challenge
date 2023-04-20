@@ -27,7 +27,8 @@ const GameController = ({ gameURL }) => {
       const data = await fetchJson(gameURL);
       const names = data.features.map((feature) => feature.properties.NAME);
       console.log(names);
-      const shuffledNames = _.shuffle(names);
+      const shuffledNames = names;
+      // const shuffledNames = _.shuffle(names);
       setFeaturesToGuess(shuffledNames);
       setGuess(shuffledNames[0]);
     } catch (error) {
@@ -109,7 +110,7 @@ const GameController = ({ gameURL }) => {
     resetCountTries();
 
     // to debug
-    if (featuresToGuess.length > 255) {
+    if (featuresToGuess.length > 257) {
       // if (featuresToGuess.length > 0) {
       setGuess(newFeatureToGuess);
     } else {
@@ -136,21 +137,30 @@ const GameController = ({ gameURL }) => {
   };
 
   const setGameIsFinished = () => {
-    console.log("the game is finished");
-    console.log(playerTime);
     stopTimer();
-    const playerName = prompt("Please enter your name:");
-    if (playerName) {
-      savePlayerData(playerName, score, playerTime);
-    }
-    navigate(`/end`);
+    console.log("the game is finished");
   };
 
   const stopTimer = () => {
-    if (startTimer) {
-      setStartTimer(false);
-    }
+    setStartTimer(false);
   };
+
+  const handlePlayerTime = (data) => {
+    console.log(`time : ${data}`);
+    setPlayerTime(data);
+  };
+
+  useEffect(() => {
+    if (playerTime === 0) {
+      return;
+    }
+    const playerName = prompt("Please enter your name:");
+    if (playerName) {
+      console.log(playerTime);
+      savePlayerData(playerName, score, playerTime);
+    }
+    navigate(`/end`);
+  }, [playerTime]);
 
   return (
     <>
@@ -162,7 +172,7 @@ const GameController = ({ gameURL }) => {
       />
       <FeatureToGuess guess={guess} />
       <Score score={score} />
-      <Timer startTimer={startTimer} onTimeUpdate={setPlayerTime} />
+      <Timer startTimer={startTimer} onTimeStoped={handlePlayerTime} />
     </>
   );
 };
