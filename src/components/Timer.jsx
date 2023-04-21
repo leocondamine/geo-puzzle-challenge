@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Timer = ({ timerOn, onFetchTimer }) => {
+const Timer = ({ timerOn, onTimeStoped }) => {
   const [timer, setTimer] = useState(0);
   const [intervalId, setIntervalId] = useState(null);
 
@@ -12,18 +12,13 @@ const Timer = ({ timerOn, onFetchTimer }) => {
       setIntervalId(interval);
     } else {
       clearInterval(intervalId);
-      onFetchTimer && onFetchTimer(fetchTimerValue());
+      handleTimeScore(timer);
     }
-  }, [timerOn, onFetchTimer]);
+  }, [timerOn]);
 
-  const fetchTimerValue = () => {
-    console.log(timer);
-    return timer;
+  const handleTimeScore = () => {
+    onTimeStoped(timer);
   };
-
-  useEffect(() => {
-    fetchTimerValue();
-  }, [onFetchTimer]);
 
   return (
     <div className="color-slate-500 fixed right-0 top-12 z-10 flex h-12 w-[30%] items-center justify-center bg-black">

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import _ from "lodash";
@@ -17,8 +17,8 @@ const GameController = ({ gameURL }) => {
   const [countTries, setCountTries] = useState(1);
   const [blinkFeature, setBlinkFeature] = useState("");
   const [changeFeatureColor, setChangeFeatureColor] = useState("");
-  const [timerOn, setTimerOn] = useState(false);
   const [score, setScore] = useState({ rows: 0, totalTries: 0 });
+  const [timerOn, setTimerOn] = useState(false);
   const [timeScore, setTimeScore] = useState(0);
 
   const fetchData = async () => {
@@ -62,7 +62,7 @@ const GameController = ({ gameURL }) => {
       } else if (!featuresToGuess.includes(selectedFeature)) {
         return;
       } else {
-        startTimerIfNotStarted();
+        startTimer();
         checkGuess();
       }
     } catch (e) {
@@ -70,7 +70,7 @@ const GameController = ({ gameURL }) => {
     }
   }, [selectedFeature]);
 
-  const startTimerIfNotStarted = () => {
+  const startTimer = () => {
     if (!timerOn) {
       setTimerOn(true);
     }
@@ -136,32 +136,34 @@ const GameController = ({ gameURL }) => {
     }
   };
 
-  const setGameIsFinished = async () => {
-    console.log("the game is finished");
-
+  const setGameIsFinished = () => {
     stopTimer();
-    await handleFetchTimer();
-    console.log(timeScore);
-    saveInLeaderBoard();
-    navigate(`/end`);
+    console.log("the game is finished");
   };
 
   const stopTimer = () => {
     setTimerOn(false);
   };
 
-  const handleFetchTimer = useCallback(async (timerValue) => {
-    await setTimeScore(timerValue);
-    return;
-  }, []);
+  const handleTimeScore = (data) => {
+    console.log(`time : ${data}`);
+    setTimeScore(data);
+  };
 
-  const saveInLeaderBoard = () => {
+  useEffect(() => {
+    if (timeScore === 0) {
+      return;
+    } else {
+      endGame();
+    }
+  }, [timeScore]);
+
+  const endGame = () => {
     const playerName = prompt("Please enter your name:");
-    console.log("save in leader boardS");
     if (playerName) {
-      console.log(timeScore);
       savePlayerData(playerName, score, timeScore);
     }
+    navigate(`/end`);
   };
 
   return (
@@ -174,7 +176,7 @@ const GameController = ({ gameURL }) => {
       />
       <FeatureToGuess guess={guess} />
       <Score score={score} />
-      <Timer timerOn={timerOn} onFetchTimer={handleFetchTimer} />
+      <Timer timerOn={timerOn} onTimeStoped={handleTimeScore} />
     </>
   );
 };
