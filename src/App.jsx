@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import GameController from "./GameController";
-import GameSelector from "./components/GameSelector";
+import Menu from "./components/Menu";
 import EndGame from "./components/EndGame";
 
 const App = () => {
@@ -11,10 +11,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={<GameSelector onGameSelected={setGameURL} />}
-        />
+        <Route path="/" element={<Menu onGameSelected={setGameURL} />} />
         <Route path="/game" element={<GameController gameURL={gameURL} />} />
         <Route path="/end" element={<EndGame />} />
       </Routes>

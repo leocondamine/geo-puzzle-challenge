@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "../style";
 
 const EndGame = () => {
   const navigate = useNavigate();
@@ -8,8 +9,11 @@ const EndGame = () => {
     navigate("/");
   };
   return (
-    <div className="fixed flex justify-center items-center gap-4 z-10 top-12 left-0 bg-black h-12 w-[30%] color-slate-500">
-      <button onClick={goToMenu} className="your-button-classes">
+    <div
+      className={`${styles.fullscreenCenter} ${styles.flexDisposition} ${styles.colors}`}
+    >
+      <div>leader board coming soon ...</div>
+      <button onClick={goToMenu} className="">
         Go to Menu
       </button>
     </div>

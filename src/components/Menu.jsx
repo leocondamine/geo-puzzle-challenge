@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "../style";
 
-const GameSelector = ({ onGameSelected }) => {
+const Menu = ({ onGameSelected }) => {
   const navigate = useNavigate();
 
   const gameList = [
@@ -26,7 +27,10 @@ const GameSelector = ({ onGameSelected }) => {
   };
 
   return (
-    <div className=" color-slate-500 z-10 flex h-screen w-full flex-col items-center justify-center gap-4 bg-black">
+    <div
+      className={`${styles.fullscreenCenter} ${styles.flexCol} ${styles.colors}`}
+    >
+      <div className="mb-20 text-4xl">Geo Puzzle Challenge</div>
       <label htmlFor="game">Choose a game : </label>
       {gameList.map((game, index) => (
         <button
@@ -43,4 +47,4 @@ const GameSelector = ({ onGameSelected }) => {
   );
 };
 
-export default GameSelector;
+export default Menu;
