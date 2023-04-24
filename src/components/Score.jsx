@@ -1,8 +1,20 @@
 import React from "react";
+import styles from "../style";
 
 const Score = ({ score }) => {
+  if (score.totalTries === 0) {
+    return (
+      <div
+        className={`${styles.frameStyle} fixed right-4 top-4 z-10 flex h-12 w-[30%]`}
+      >
+        Let's go !!!
+      </div>
+    );
+  }
   return (
-    <div className="fixed flex justify-center items-center z-10 top-0 right-0 bg-black h-12 w-[30%] color-slate-500">
+    <div
+      className={`${styles.frameStyle} fixed right-4 top-4 z-10 flex h-12 w-[30%]`}
+    >
       Score : {parseInt((score.rows / score.totalTries) * 100)}
     </div>
   );

@@ -27,8 +27,8 @@ const GameController = ({ gameURL }) => {
       const data = await fetchJson(gameURL);
       const names = data.features.map((feature) => feature.properties.NAME);
       console.log(names);
-      const shuffledNames = names;
-      // const shuffledNames = _.shuffle(names);
+      // const shuffledNames = names;
+      const shuffledNames = _.shuffle(names);
       setFeaturesToGuess(shuffledNames);
       setGuess(shuffledNames[0]);
     } catch (error) {
@@ -110,8 +110,9 @@ const GameController = ({ gameURL }) => {
     resetCountTries();
 
     // to debug
-    if (featuresToGuess.length > 257) {
-      // if (featuresToGuess.length > 0) {
+    // if (remainingFeaturesToGuess.length > 257) {
+    if (remainingFeaturesToGuess.length > 0) {
+      console.log(remainingFeaturesToGuess);
       setGuess(newFeatureToGuess);
     } else {
       setGameIsFinished();

@@ -9,13 +9,16 @@ const EndGame = () => {
     navigate("/");
   };
   return (
-    <div
-      className={`${styles.fullscreenCenter} ${styles.flexDisposition} ${styles.colors}`}
-    >
-      <div>leader board coming soon ...</div>
-      <button onClick={goToMenu} className="">
-        Go to Menu
-      </button>
+    <div className={`flex ${styles.fullscreen} ${styles.center}`}>
+      <div className={`flex ${styles.frameStyle} h-[80%] w-[80%]`}>
+        <div>leader board coming soon ...</div>
+        <button
+          onClick={goToMenu}
+          className="text-2xl duration-300 ease-in-out hover:scale-110"
+        >
+          Go to Menu
+        </button>
+      </div>
     </div>
   );
 };

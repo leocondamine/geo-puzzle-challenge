@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"); */
 
 /* Required OpenLayers styles */
 @import url("https://openlayers.org/en/v6.5.0/css/ol.css");
@@ -6,12 +6,21 @@
 /* Optional OpenLayers theme styles */
 @import url("https://openlayers.org/en/v6.5.0/css/ol-theme.css");
 
+@font-face {
+  font-family: "Geo";
+  src: url("../public/fonts/Geo.ttf") format("truetype");
+}
+@font-face {
+  font-family: "GeorgLight";
+  src: url("../public/fonts/GeorgLight.ttf") format("truetype");
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "GeorgLight", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
   border: 0;

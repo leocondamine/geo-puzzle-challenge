@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import styles from "../style";
 
 const Timer = ({ timerOn, onTimeStoped }) => {
   const [timer, setTimer] = useState(0);
@@ -21,8 +22,10 @@ const Timer = ({ timerOn, onTimeStoped }) => {
   };
 
   return (
-    <div className="color-slate-500 fixed right-0 top-12 z-10 flex h-12 w-[30%] items-center justify-center bg-black">
-      Time: {timer}
+    <div
+      className={`${styles.frameStyle} fixed right-4 top-20 z-10 flex h-12 w-[30%]`}
+    >
+      Time : {timer}
     </div>
   );
 };

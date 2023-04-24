@@ -7,42 +7,47 @@ const Menu = ({ onGameSelected }) => {
 
   const gameList = [
     {
-      name: "Countries",
-      url: "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/main/src/maps/countries_very_simplified_258.json",
+      name: "Countries of the World",
+      url: "https://cdn.jsdelivr.net/gh/leocondamine/maps-geo-puzzle-challenge@main/countries.json",
       // filter-fields NAME on mapshaper applied
     },
     {
-      name: "Test dupplicate",
-      url: "https://raw.githubusercontent.com/leocondamine/geo-puzzle-challenge/main/src/maps/countries_very_simplified_258.json",
+      name: "French Departments",
+      url: "https://cdn.jsdelivr.net/gh/leocondamine/maps-geo-puzzle-challenge@main/french_dpt.json",
+      // filter-fields NAME on mapshaper applied
+    },
+    {
+      name: "French Regions",
+      url: "https://cdn.jsdelivr.net/gh/leocondamine/maps-geo-puzzle-challenge@main/french_regions.json",
       // filter-fields NAME on mapshaper applied
     },
     // Add more JSON files here
   ];
 
-  const handleSelection = () => {
-    const gameSelected = document.getElementById("game");
-    const selectedValue = gameSelected.value;
-    onGameSelected(selectedValue);
+  const handleSelection = (index) => {
+    const gameSelected = gameList[index];
+    console.log(gameSelected.url);
+    onGameSelected(gameSelected.url);
     navigate(`/game`);
   };
 
   return (
-    <div
-      className={`${styles.fullscreenCenter} ${styles.flexCol} ${styles.colors}`}
-    >
-      <div className="mb-20 text-4xl">Geo Puzzle Challenge</div>
-      <label htmlFor="game">Choose a game : </label>
-      {gameList.map((game, index) => (
-        <button
-          onClick={handleSelection}
-          id="game"
-          key={index}
-          value={game.url}
-          className="text-white"
-        >
-          {game.name}
-        </button>
-      ))}
+    <div className={`flex ${styles.fullscreen} ${styles.center}`}>
+      <div className={`flex ${styles.frameStyle} h-[80%] w-[80%]`}>
+        <div className="mb-20 font-title text-8xl">Geo Puzzle Challenge</div>
+        {/* <label htmlFor="game">Choose a game : </label> */}
+        {gameList.map((game, index) => (
+          <button
+            onClick={() => handleSelection(index)}
+            id="game"
+            key={index}
+            value={game.url}
+            className="text-2xl duration-300 ease-in-out hover:scale-110"
+          >
+            {game.name}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

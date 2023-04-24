@@ -185,11 +185,11 @@ const MapDisplay = ({
     <div>
       <div
         id="map"
-        className="map absolute top-0 bottom-0 w-full overflow-hidden"
+        className="map absolute bottom-0 top-0 w-full overflow-hidden"
       ></div>
-      <div className="absolute top-0 bottom-0">
+      {/* <div className="absolute top-0 bottom-0">
         Selected regions: <span id="info">None</span>
-      </div>
+      </div> */}
     </div>
   );
 };
