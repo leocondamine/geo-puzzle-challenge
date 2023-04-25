@@ -46,7 +46,7 @@ const MapDisplay = ({
       target: "map",
       view: new View({
         center: [0, 0],
-        zoom: 2,
+        zoom: 1,
         constrainRotation: 16,
       }),
     });
@@ -187,9 +187,9 @@ const MapDisplay = ({
         id="map"
         className="map absolute bottom-0 top-0 w-full overflow-hidden"
       ></div>
-      {/* <div className="absolute top-0 bottom-0">
-        Selected regions: <span id="info">None</span>
-      </div> */}
+      <div className="hidden">
+        Selected: <span id="info">None</span>
+      </div>
     </div>
   );
 };

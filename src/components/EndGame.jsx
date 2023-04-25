@@ -11,7 +11,7 @@ const EndGame = () => {
   return (
     <div className={`flex ${styles.fullscreen} ${styles.center}`}>
       <div className={`flex ${styles.frameStyle} h-[80%] w-[80%]`}>
-        <div>leader board coming soon ...</div>
+        <div>Leader board coming soon ...</div>
         <button
           onClick={goToMenu}
           className="text-2xl duration-300 ease-in-out hover:scale-110"
