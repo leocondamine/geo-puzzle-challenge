@@ -3,8 +3,8 @@
 /* Required OpenLayers styles */
 @import url("https://openlayers.org/en/v6.5.0/css/ol.css");
 
-/* Optional OpenLayers theme styles */
-@import url("https://openlayers.org/en/v6.5.0/css/ol-theme.css");
+/* Optional OpenLayers theme styles
+@import url("https://openlayers.org/en/v6.5.0/css/ol-theme.css"); */
 
 @font-face {
   font-family: "Geo";
